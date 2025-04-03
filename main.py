@@ -7,7 +7,7 @@ app = FastAPI()
 
 
 @app.get("/about")
-async def information_about_developer():
+def information_about_developer():
     return {
         "firstname": "Егор",
         "lastname": "Гологузов",
@@ -18,12 +18,12 @@ async def information_about_developer():
 
 
 @app.get("/rnd")
-async def random_integer_from_1_to_10():
+def random_integer_from_1_to_10():
     return {"randint": random.randint(1, 10)}
 
 
 @app.post("/t_square")
-async def calculate_perimeter_and_area_for_triangle_by_3_sides(
+def calculate_perimeter_and_area_for_triangle_by_3_sides(
     a: float = Query(..., gt=0, description="Сторона A > 0"),
     b: float = Query(..., gt=0, description="Сторона B > 0"),
     c: float = Query(..., gt=0, description="Сторона C > 0"),
