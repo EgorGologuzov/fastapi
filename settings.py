@@ -1,0 +1,1 @@
+POSTERS_DIR = "static/posters"

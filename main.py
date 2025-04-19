@@ -1,12 +1,19 @@
 from fastapi import FastAPI
+from routers import genres, movies
+from fastapi.staticfiles import StaticFiles
+import os
+from settings import POSTERS_DIR
 
 
 app = FastAPI()
 
 
-@app.get("/hello")
-async def information_about_developer():
-    return {
-        "message": "Hello world!!!",
-    }
+app.include_router(genres.router)
+app.include_router(movies.router)
+
+# Создаем папку для хранения постеров
+os.makedirs(POSTERS_DIR, exist_ok=True)
+
+# Раздаем статику (для доступа к загруженным постерам)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
