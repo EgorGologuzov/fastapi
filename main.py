@@ -5,8 +5,8 @@ app = FastAPI()
 
 
 @app.get("/hello")
-async def information_about_developer():
-    return {
-        "message": "Hello world!!!",
-    }
+async def hello():
+  return {
+    "message": "Hello world!!!",
+  }
 
