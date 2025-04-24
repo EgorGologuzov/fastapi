@@ -4,6 +4,7 @@ from typing import List
 from models import Genre
 from pyd.genres import GenreReturn, GenreCreate
 from database import get_db
+from auth import auth
 
 
 router = APIRouter(prefix="/genres", tags=["genres"])
@@ -16,7 +17,7 @@ def get_all_genres(db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=GenreReturn)
-def create_genre(create_data: GenreCreate, db: Session = Depends(get_db)):
+def create_genre(create_data: GenreCreate, db: Session = Depends(get_db), _ = Depends(auth)):
   
   existing_genre = db.query(Genre).filter(Genre.name == create_data.name).first()
 

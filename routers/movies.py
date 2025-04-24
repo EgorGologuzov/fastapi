@@ -9,6 +9,7 @@ import imghdr
 import os
 import uuid
 from settings import POSTERS_DIR
+from auth import auth
 
 
 router = APIRouter(prefix="/movies", tags=["movies"])
@@ -32,7 +33,7 @@ def get_movie_by_id(movie_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=MovieReturn)
-def create_movie(create_data: MovieCreate, db: Session = Depends(get_db)):
+def create_movie(create_data: MovieCreate, db: Session = Depends(get_db), _ = Depends(auth)):
 
     genres = db.query(Genre).filter(Genre.id.in_(create_data.genre_ids)).all()
 
@@ -50,7 +51,7 @@ def create_movie(create_data: MovieCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{movie_id}", response_model=MovieReturn)
-def update_movie(movie_id: int, update_data: MovieUpdate, db: Session = Depends(get_db)):
+def update_movie(movie_id: int, update_data: MovieUpdate, db: Session = Depends(get_db), _ = Depends(auth)):
     
   movie = db.query(Movie).filter(Movie.id == movie_id).first()
 
@@ -75,7 +76,7 @@ def update_movie(movie_id: int, update_data: MovieUpdate, db: Session = Depends(
 
 
 @router.delete("/{movie_id}", response_model=MovieReturn)
-def delete_movie(movie_id: int, db: Session = Depends(get_db)):
+def delete_movie(movie_id: int, db: Session = Depends(get_db), _ = Depends(auth)):
 
   movie = db.query(Movie).filter(Movie.id == movie_id).first()
 
@@ -89,7 +90,7 @@ def delete_movie(movie_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{movie_id}/image", response_model=MovieReturn)
-async def upload_movie_poster(movie_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_movie_poster(movie_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), _ = Depends(auth)):
   
   # Проверяем наличие фильма в БД
   movie = db.query(Movie).filter(Movie.id == movie_id).first()

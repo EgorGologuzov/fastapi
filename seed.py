@@ -1,16 +1,11 @@
 from datetime import datetime
-from sqlalchemy import MetaData
 from models import Genre, Movie
 from database import Base, engine, get_db
 
 with get_db().__next__() as session:
 
-  # Удаление таблиц
-  metadata = MetaData()
-  metadata.reflect(bind=engine)
-  metadata.drop_all(bind=engine)
-
-  # Создание таблиц
+  # Создание и удаление таблиц
+  Base.metadata.drop_all(engine)
   Base.metadata.create_all(engine)
 
   # Создание жанров
