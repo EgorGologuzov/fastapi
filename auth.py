@@ -1,20 +1,22 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from sqlalchemy.orm import Session
+from database import get_db
+from models import User
 from hashlib import sha256
-
-
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD_HASH = "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f" # password: 12345678
 
 
 security = HTTPBasic()
 
 
-def auth(credentials: HTTPBasicCredentials = Depends(security)):
+def auth(
+  credentials: HTTPBasicCredentials = Depends(security),
+  db: Session = Depends(get_db),
+):
+  found_user = db.query(User).filter(User.username == credentials.username).first()
 
-  username = credentials.username
-  password_hash = sha256(credentials.password.encode('utf-8')).hexdigest()
+  if not found_user or sha256(credentials.password.encode("utf-8")).hexdigest() != found_user.password_hash:
+    raise HTTPException(403, "Неверный логин или пароль")
 
-  if username != ADMIN_USERNAME or password_hash != ADMIN_PASSWORD_HASH:
-    raise HTTPException(401, "Неверный логин или пароль")
+  return found_user
 

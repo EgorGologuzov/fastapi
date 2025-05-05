@@ -1,12 +1,24 @@
 from datetime import datetime
 from models import Genre, Movie
 from database import Base, engine, get_db
+from models import User
+from hashlib import sha256
 
 with get_db().__next__() as session:
 
   # Создание и удаление таблиц
   Base.metadata.drop_all(engine)
   Base.metadata.create_all(engine)
+
+  # Создание пользователей
+  users = [
+    User(username="user-0", password_hash=sha256("12345678".encode("utf-8")).hexdigest(), email="example@email.com"),
+    User(username="user-1", password_hash=sha256("12345678".encode("utf-8")).hexdigest(), email="example@email.com"),
+    User(username="user-2", password_hash=sha256("12345678".encode("utf-8")).hexdigest(), email="example@email.com"),
+  ]
+
+  session.add_all(users)
+  session.commit()
 
   # Создание жанров
   genres = [

@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, Table, ForeignK
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
+from sqlalchemy.sql import func
 
 
 # Связь многие-ко-многим Genre <-> Movie
@@ -42,4 +43,17 @@ class Movie(Base):
 
   def __repr__(self):
     return f"<Movie(id={self.id}, title='{self.title}', year={self.year})>"
+
+
+class User(Base):
+  __tablename__ = "users"
+
+  id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
+  username = Column(String(60), nullable=False, unique=True)
+  password_hash = Column(String(255), nullable=False)
+  email = Column(String(255), nullable=True)
+  created_at = Column(DateTime(), server_default=func.now())
+
+  def __repr__(self):
+    return f"<User(id={self.id}, title='{self.username}')>"
     
